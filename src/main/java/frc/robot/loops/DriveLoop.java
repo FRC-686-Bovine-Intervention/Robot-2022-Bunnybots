@@ -7,9 +7,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
@@ -43,8 +43,8 @@ public class DriveLoop implements Loop
 	private static GyroBase gyro;
     private DriveState driveState;
 
-	public final TalonFX lMotorMaster;
-	public final TalonFX rMotorMaster;
+	public final TalonSRX lMotorMaster;
+	public final TalonSRX rMotorMaster;
 	public final List<BaseMotorController> lMotorSlaves;
 	public final List<BaseMotorController> rMotorSlaves;
 
@@ -54,8 +54,8 @@ public class DriveLoop implements Loop
 
 	// Motor Controller Inversions
 	
-    public static TalonFXInvertType kLeftMotorInverted = TalonFXInvertType.CounterClockwise;
-    public static TalonFXInvertType kRightMotorInverted = TalonFXInvertType.Clockwise;
+    public static boolean kLeftMotorInverted = false;
+    public static boolean kRightMotorInverted = true;
 
     public static int kDriveTrainCurrentLimit = 25;
 
@@ -150,8 +150,8 @@ public class DriveLoop implements Loop
 		/*****************************************************************
 		 * Configure Master Motor Controllers
 		 *****************************************************************/
-		lMotorMaster = new TalonFX(Constants.kLeftMasterID);
-		rMotorMaster = new TalonFX(Constants.kRightMasterID);
+		lMotorMaster = new TalonSRX(Constants.kLeftMasterID);
+		rMotorMaster = new TalonSRX(Constants.kRightMasterID);
         
 		lMotorMaster.configFactoryDefault();
 		rMotorMaster.configFactoryDefault();
@@ -229,8 +229,8 @@ public class DriveLoop implements Loop
 		 *****************************************************************/
 		lMotorSlaves = new ArrayList<BaseMotorController>();	
 		rMotorSlaves = new ArrayList<BaseMotorController>();	
-		lMotorSlaves.add(new TalonFX(Constants.kLeftSlaveID));
-		rMotorSlaves.add(new TalonFX(Constants.kRightSlaveID));			
+		lMotorSlaves.add(new VictorSPX(Constants.kLeftSlaveID));
+		rMotorSlaves.add(new VictorSPX(Constants.kRightSlaveID));			
 		
         for (BaseMotorController lMotorSlave : lMotorSlaves) 
         {

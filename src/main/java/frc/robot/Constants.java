@@ -5,19 +5,22 @@ public class Constants {
     public static Constants getInstance() {if(instance == null){instance = new Constants();}return instance;}
 
     // Hardware Port Definitions
+    //public static int kPCMID =              100;
     // Drivetrain Hardware
-    public static int kPigeonID =           1;
-    public static int kLeftMasterID =       2;
-    public static int kLeftSlaveID =        3;
-    public static int kRightMasterID =      4;
-    public static int kRightSlaveID =       5;
+    public static int kPigeonID =           100;
+    public static int kLeftMasterID =       100;
+    public static int kLeftSlaveID =        100;
+    public static int kRightMasterID =      100;
+    public static int kRightSlaveID =       100;
     // Intake Hardware
-    public static int kArmMotorID =         6;
-    public static int kRollerMotorID =      7;
-    // Climber Hardware
-    public static int kLeftClimberID =          8;
-    public static int kRightClimberID =         9;
-    public static int kClimberHallEffectPort =  9;
+    public static int kLeftArmMotorID =     100;
+    public static int kRightArmMotorID =    100;
+    public static int kClawSolenoidFChannel =     100;
+    public static int kClawSolenoidRChannel =     100;
+    // Hopper Hardware
+    public static int kBlanketMotorID =         100;
+    public static int kLeftFlapSolenoidID =     100;
+    public static int kRightFlapSolenoidID =    100;
     // Control Hardware
     public static int kThrustmasterPort =   0;
     public static int kButtonboardPort =    1;
