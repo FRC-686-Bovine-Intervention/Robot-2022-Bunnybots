@@ -8,11 +8,12 @@ public class SubsystemManager {
 
     private SubsystemManager() {}
 
-    public ArrayList<Subsystem> subsystems = new ArrayList<>();
+    public final ArrayList<Subsystem> subsystems = new ArrayList<>();
 
     public void init()
     {
-        subsystems.add(Drive.getInstance());
+        // subsystems.add(Drive.getInstance());
+        subsystems.add(Intake.getInstance());
     }
 
     public void run()                   {for (Subsystem s : subsystems) {if (s.Enabled) s.run();            else s.disable();}}

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystems.SubsystemManager;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -13,8 +14,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+  final SubsystemManager subManager = SubsystemManager.getInstance();
   @Override
   public void robotInit() {
+    subManager.init();
   }
   @Override
   public void robotPeriodic() {}
@@ -23,15 +26,21 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void autonomousPeriodic() {
+    subManager.run();
   }
   @Override
   public void teleopInit() {}
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    DriverInteraction.getInstance().run();
+    subManager.run();
+  }
   @Override
   public void disabledInit() {}
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    subManager.disable();
+  }
   @Override
   public void testInit() {}
   @Override

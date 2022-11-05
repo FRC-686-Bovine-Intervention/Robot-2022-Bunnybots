@@ -9,7 +9,7 @@ public class Controls {
     private static Controls instance;
     public static Controls getInstance() {if(instance == null){instance = new Controls();}return instance;}
 
-    Joystick thrustmaster, buttonboard;
+    final Joystick thrustmaster, buttonboard;
 
     public Controls()
     {
@@ -38,22 +38,16 @@ public class Controls {
     }
 
     public enum ButtonControlEnum {
-        INTAKE,
-        OUTTAKE,
-        CLIMBER_NEXT_STATE,
-        CLIMBER_PREV_STATE,
-        CLIMBER_RESET_STATE
+        CLAW_GRAB,
+        INTAKE_NEXT_STATE
     }
     
     public boolean getButton(ButtonControlEnum button)
     {
         switch(button)
         {
-            case INTAKE:                    return thrustmaster.getRawButton(Thrustmaster.kTriggerButton);
-            case OUTTAKE:                   return thrustmaster.getRawButton(Thrustmaster.kBottomThumbButton);
-            case CLIMBER_NEXT_STATE:          return thrustmaster.getRawButton(Thrustmaster.kTopButton3);
-            case CLIMBER_PREV_STATE:          return thrustmaster.getRawButton(Thrustmaster.kTopButton2);
-            case CLIMBER_RESET_STATE:         return thrustmaster.getRawButton(Thrustmaster.kBottomButton1) && thrustmaster.getRawButton(Thrustmaster.kBottomButton2) && thrustmaster.getRawButton(Thrustmaster.kBottomButton3);
+            case CLAW_GRAB:                 return thrustmaster.getRawButton(Thrustmaster.kTriggerButton);
+            case INTAKE_NEXT_STATE:         return thrustmaster.getRawButton(Thrustmaster.kBottomThumbButton);
             default:                        return false;
         }
     }
