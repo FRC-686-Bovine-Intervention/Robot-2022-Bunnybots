@@ -280,7 +280,8 @@ public class Drive extends Subsystem
 	//@Override
 	public void zeroSensors() { driveCmd.setResetEncoders(); }
 
-	@Override public void run(){} @Override public void updateShuffleboard(){
+	@Override public void run(){} 
+	@Override public void updateShuffleboard(){
 		Enabled = enableEntry.getBoolean(true);
 		enableEntry.setBoolean(Enabled);
 	}

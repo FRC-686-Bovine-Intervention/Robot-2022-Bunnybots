@@ -19,8 +19,10 @@ public class Constants {
     public static final int kClawSolenoidRChannel =     100;
     // Hopper Hardware
     public static final int kBlanketMotorID =         100;
-    public static final int kLeftFlapSolenoidID =     100;
-    public static final int kRightFlapSolenoidID =    100;
+    public static final int kLeftFlapSolenoidFChannel =     100;
+    public static final int kLeftFlapSolenoidRChannel =     100;
+    public static final int kRightFlapSolenoidFChannel =     100;
+    public static final int kRightFlapSolenoidRChannel =     100;
     // Control Hardware
     public static final int kThrustmasterPort =   0;
     public static final int kButtonboardPort =    1;
@@ -29,8 +31,8 @@ public class Constants {
     public static final int kTalonTimeoutMs = 5;
 
     // Robot Dimensions
-    // public static final double kCenterToSideBumper = 15.0;
-    // public static final double kCenterToFrontBumper = 19.5;
-    // public static final double kCenterToIntake = 32.0;
+    public static final double kCenterToSideBumper = 15.0;
+    public static final double kCenterToFrontBumper = 19.5;
+    public static final double kCenterToIntake = 32.0;
 }
 
