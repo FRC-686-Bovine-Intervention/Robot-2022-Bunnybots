@@ -184,7 +184,6 @@ public class Intake extends Subsystem{
         pidOutput = pid.calculate(currentAngleDegrees);
         leftArmMotor.set(TalonFXControlMode.PercentOutput, pidOutput);
     }
-
     public boolean isAtPos(ArmPosEnum pos, double threshold)
     {
         double currentAngleDegrees = encoderUnitsToDegrees(leftArmMotor.getSelectedSensorPosition());
@@ -192,7 +191,6 @@ public class Intake extends Subsystem{
 
         return (Math.abs(currentAngleDegrees - targetDegrees) < threshold);
     }
-
     public boolean isAtPos(ArmPosEnum pos) {return isAtPos(pos, kAtTargetThresholdDegrees);}
 
     public void setState(IntakeState newState)

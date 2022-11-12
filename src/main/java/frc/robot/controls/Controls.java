@@ -49,8 +49,8 @@ public class Controls {
     public enum ButtonControlEnum {
         CLAW_GRAB,
         INTAKE_NEXT_STATE,
-        LEFT_FLAP_TOGGLE,
-        RIGHT_FLAP_TOGGLE,
+        LEFT_FLAP,
+        RIGHT_FLAP,
         BLANKET
     }
 
@@ -62,9 +62,9 @@ public class Controls {
                 return thrustmaster.getRawButton(Thrustmaster.kBottomThumbButton);
             case BLANKET:
                 return thrustmaster.getRawButton(Thrustmaster.kBottomButton2);
-            case LEFT_FLAP_TOGGLE:
+            case LEFT_FLAP:
                 return thrustmaster.getRawButton(Thrustmaster.kBottomButton1);
-            case RIGHT_FLAP_TOGGLE:
+            case RIGHT_FLAP:
                 return thrustmaster.getRawButton(Thrustmaster.kBottomButton3);
             default:
                 return false;

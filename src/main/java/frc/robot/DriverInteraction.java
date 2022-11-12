@@ -67,7 +67,7 @@ public class DriverInteraction {
         // drive.setOpenLoop(controls.getDriveCommand());
 
         hopper.setBlanket(controls.getButton(ButtonControlEnum.BLANKET))
-                .setFlaps(controls.getButton(ButtonControlEnum.LEFT_FLAP_TOGGLE),
-                        controls.getButton(ButtonControlEnum.RIGHT_FLAP_TOGGLE));
+                .setFlaps(controls.getButton(ButtonControlEnum.LEFT_FLAP),
+                        controls.getButton(ButtonControlEnum.RIGHT_FLAP));
     }
 }

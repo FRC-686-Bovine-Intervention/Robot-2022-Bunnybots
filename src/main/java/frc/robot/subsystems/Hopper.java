@@ -29,6 +29,8 @@ public class Hopper extends Subsystem {
     private static final boolean invertRightSolenoid = false;
 
     private static final double kBlanketMotorPower = 0.1;
+    private static final double kCalibrationPower = 0.1;
+    private static final double kCalPosition = 8;
 
     private Hopper() {
         // Initalize
@@ -43,9 +45,10 @@ public class Hopper extends Subsystem {
         // Configure
         blanketMotor.restoreFactoryDefaults();
         blanketMotor.setInverted(false);
-        blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 20);
+        blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float)kCalPosition);
         blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
 
+        calibrated = false;
     }
 
     private boolean blanketUp = false;
@@ -58,7 +61,22 @@ public class Hopper extends Subsystem {
         blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
-        blanketMotor.set(blanketUp ? kBlanketMotorPower : -kBlanketMotorPower);
+        if(calibrated && autoCalibrate)
+        {
+            blanketMotor.set((blanketUp ? 1 : -1) * kBlanketMotorPower);
+        }
+        else
+        {
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+            blanketMotor.set(kCalibrationPower);
+        }
+
+        if(blanketMotor.getOutputCurrent() >= 5)
+        {
+            blanketMotor.getEncoder().setPosition(kCalPosition);
+            calibrated = true;
+        }
 
         leftFlapSolenoid.set(leftFlapOpen ^ invertLeftSolenoid ? Value.kForward : Value.kReverse);
         rightFlapSolenoid.set(rightFlapOpen ^ invertRightSolenoid ? Value.kForward : Value.kReverse);
@@ -79,11 +97,13 @@ public class Hopper extends Subsystem {
     private NetworkTableEntry blanketEntry = tab.add("Blanket Up", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
     private NetworkTableEntry leftFlapEntry = tab.add("Left Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)         .withPosition(0,0).withSize(2,1).getEntry();
     private NetworkTableEntry rightFlapEntry = tab.add("Right Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)   .withPosition(0,1).getEntry();
+    private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
 
     @Override
     public void updateShuffleboard() {
         blanketEntry.setBoolean(blanketUp);
         leftFlapEntry.setBoolean(leftFlapOpen);
         rightFlapEntry.setBoolean(rightFlapOpen);
+        calibratedEntry.getBoolean(calibrated);
     }
 }
