@@ -4,9 +4,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,7 +23,7 @@ public class Hopper extends Subsystem {
 
     // Hardware
     private final CANSparkMax blanketMotor;
-    private final DoubleSolenoid leftFlapSolenoid, rightFlapSolenoid;
+    private final Solenoid leftFlapSolenoid, rightFlapSolenoid;
     private static final boolean invertLeftSolenoid = false;
     private static final boolean invertRightSolenoid = false;
 
@@ -35,12 +34,10 @@ public class Hopper extends Subsystem {
     private Hopper() {
         // Initalize
         blanketMotor = new CANSparkMax(Constants.kBlanketMotorID, MotorType.kBrushless);
-        leftFlapSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
-                Constants.kLeftFlapSolenoidFChannel,
-                Constants.kLeftFlapSolenoidRChannel);
-        rightFlapSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
-                Constants.kRightFlapSolenoidFChannel,
-                Constants.kRightFlapSolenoidRChannel);
+        leftFlapSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+                Constants.kLeftFlapSolenoidFChannel);
+        rightFlapSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+                Constants.kRightFlapSolenoidFChannel);
 
         // Configure
         blanketMotor.restoreFactoryDefaults();
@@ -58,8 +55,8 @@ public class Hopper extends Subsystem {
 
     @Override
     public void run() {
-        blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
         if(calibrated && autoCalibrate)
         {
@@ -67,19 +64,19 @@ public class Hopper extends Subsystem {
         }
         else
         {
-            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
-            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+            // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
             blanketMotor.set(kCalibrationPower);
         }
 
-        if(blanketMotor.getOutputCurrent() >= 5)
+        if(blanketMotor.getOutputCurrent() >= 1)
         {
             blanketMotor.getEncoder().setPosition(kCalPosition);
             calibrated = true;
         }
 
-        leftFlapSolenoid.set(leftFlapOpen ^ invertLeftSolenoid ? Value.kForward : Value.kReverse);
-        rightFlapSolenoid.set(rightFlapOpen ^ invertRightSolenoid ? Value.kForward : Value.kReverse);
+        leftFlapSolenoid.set(leftFlapOpen ^ invertLeftSolenoid);
+        rightFlapSolenoid.set(rightFlapOpen ^ invertRightSolenoid);
     }
 
     public Hopper setBlanket(boolean up) {
@@ -98,12 +95,14 @@ public class Hopper extends Subsystem {
     private NetworkTableEntry leftFlapEntry = tab.add("Left Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)         .withPosition(0,0).withSize(2,1).getEntry();
     private NetworkTableEntry rightFlapEntry = tab.add("Right Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)   .withPosition(0,1).getEntry();
     private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
+    private NetworkTableEntry motorOutputEntry = tab.add("Motor Current", "not updating").withWidget(BuiltInWidgets.kTextView)             .withPosition(2,1).getEntry();
 
     @Override
     public void updateShuffleboard() {
         blanketEntry.setBoolean(blanketUp);
         leftFlapEntry.setBoolean(leftFlapOpen);
         rightFlapEntry.setBoolean(rightFlapOpen);
-        calibratedEntry.getBoolean(calibrated);
+        calibratedEntry.setBoolean(calibrated);
+        motorOutputEntry.setDouble(blanketMotor.getOutputCurrent());
     }
 }

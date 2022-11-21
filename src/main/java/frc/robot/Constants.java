@@ -7,22 +7,20 @@ public class Constants {
     // Hardware Port Definitions
     // public static final int kPCMID =              100;
     // Drivetrain Hardware
-    public static final int kPigeonID =           100;
-    public static final int kLeftMasterID =       100;
-    public static final int kLeftSlaveID =        100;
-    public static final int kRightMasterID =      100;
-    public static final int kRightSlaveID =       100;
+    public static final int kPigeonID =         1;
+    public static final int kLeftMasterID =     2;
+    public static final int kLeftSlaveID =      3;
+    public static final int kRightMasterID =    4;
+    public static final int kRightSlaveID =     5;
     // Intake Hardware
-    public static final int kLeftArmMotorID =     100;
-    public static final int kRightArmMotorID =    100;
-    public static final int kClawSolenoidFChannel =     100;
-    public static final int kClawSolenoidRChannel =     100;
+    public static final int kLeftArmMotorID =   6;
+    public static final int kRightArmMotorID =  7;
+    public static final int kArmCalSwitchCh =   9;
+    public static final int kClawSolenoidFChannel = 4;
     // Hopper Hardware
-    public static final int kBlanketMotorID =         100;
-    public static final int kLeftFlapSolenoidFChannel =     100;
-    public static final int kLeftFlapSolenoidRChannel =     100;
-    public static final int kRightFlapSolenoidFChannel =     100;
-    public static final int kRightFlapSolenoidRChannel =     100;
+    public static final int kBlanketMotorID =               8;
+    public static final int kLeftFlapSolenoidFChannel =     6;
+    public static final int kRightFlapSolenoidFChannel =    5;
     // Control Hardware
     public static final int kThrustmasterPort =   0;
     public static final int kButtonboardPort =    1;

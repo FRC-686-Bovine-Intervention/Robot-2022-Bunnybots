@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.loops.DriveLoop;
+import frc.robot.loops.LoopController;
 import frc.robot.subsystems.SubsystemManager;
 
 /**
@@ -15,12 +17,17 @@ import frc.robot.subsystems.SubsystemManager;
  */
 public class Robot extends TimedRobot {
   final SubsystemManager subManager = SubsystemManager.getInstance();
+
   @Override
   public void robotInit() {
     subManager.init();
+    LoopController.getInstance().register(DriveLoop.getInstance());
+    LoopController.getInstance().start();
   }
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    subManager.updateShuffleboard();
+  }
   @Override
   public void autonomousInit() {
   }

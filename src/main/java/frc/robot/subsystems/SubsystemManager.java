@@ -12,8 +12,9 @@ public class SubsystemManager {
 
     public void init()
     {
-        // subsystems.add(Drive.getInstance());
+        subsystems.add(Drive.getInstance());
         subsystems.add(Intake.getInstance());
+        subsystems.add(Hopper.getInstance());
     }
 
     public void run()                   {for (Subsystem s : subsystems) {if (s.Enabled) s.run();            else s.disable();}}
