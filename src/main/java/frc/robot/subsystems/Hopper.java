@@ -58,11 +58,11 @@ public class Hopper extends Subsystem {
         // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
-        if(calibrated && autoCalibrate)
+        if(calibrated)
         {
             blanketMotor.set((blanketUp ? 1 : -1) * kBlanketMotorPower);
         }
-        else
+        else if(autoCalibrate)
         {
             // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
             // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
