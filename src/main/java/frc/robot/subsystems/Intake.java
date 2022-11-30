@@ -46,7 +46,7 @@ public class Intake extends Subsystem{
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kMaxVelocityDegPerSecond = 45;
+    private static final double kMaxVelocityDegPerSecond = 60;
     private static final double kMaxAccelerationDegPerSecSquared = 135;
 
     // Position Check
@@ -54,6 +54,7 @@ public class Intake extends Subsystem{
 
     // Soft Limits
     private static final double kSoftLimitTolerance = 1;
+    private static final double kMaxJiggleAmount = 1;
 
     public enum IntakeState
     {
@@ -113,7 +114,7 @@ public class Intake extends Subsystem{
         calibrated = false;
     }
 
-    private boolean jiggleStep = true;
+    private boolean jiggleStep = false;
     private double jiggleCount = 0;
     @Override
     public void run()
@@ -131,16 +132,17 @@ public class Intake extends Subsystem{
         {
             case DUMP:
                 if(isAtPos(ArmPosEnum.RAISED))
+                {
                     jiggleStep = false;
+                    if(jiggleStep)
+                        jiggleCount++;
+                }
                 if(isAtPos(ArmPosEnum.JIGGLE_DOWN))
                 {
-
-                    if(!jiggleStep)
-                        jiggleCount++;
                     jiggleStep = true;
                 }
                 setTargetPos(jiggleStep ? ArmPosEnum.RAISED : ArmPosEnum.JIGGLE_DOWN);
-                if(jiggleCount >= 2)
+                if(jiggleCount >= kMaxJiggleAmount)
                     setState(IntakeState.DROP);
             break;
             case DROP:
