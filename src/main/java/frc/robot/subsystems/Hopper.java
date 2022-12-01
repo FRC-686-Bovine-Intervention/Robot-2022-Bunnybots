@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -27,9 +29,11 @@ public class Hopper extends Subsystem {
     private static final boolean invertLeftSolenoid = false;
     private static final boolean invertRightSolenoid = false;
 
-    private static final double kBlanketMotorPower = 0.1;
-    private static final double kCalibrationPower = 0.1;
-    private static final double kCalPosition = 8;
+    private static final double kBlanketMotorPower = 0.5;
+    private static final double kCalibrationPower = 0.2;
+    private static final double kCalPosition = 650;
+
+    private static final double kDisableCoastTimeThreshold = 5;
 
     private Hopper() {
         // Initalize
@@ -42,7 +46,7 @@ public class Hopper extends Subsystem {
         // Configure
         blanketMotor.restoreFactoryDefaults();
         blanketMotor.setInverted(false);
-        blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float)kCalPosition);
+        blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float)kCalPosition-25);
         blanketMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
 
         calibrated = false;
@@ -55,28 +59,47 @@ public class Hopper extends Subsystem {
 
     @Override
     public void run() {
-        // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-
+        disabledInit = true;
+        
         if(calibrated)
         {
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+            blanketMotor.setOpenLoopRampRate(0.25);
             blanketMotor.set((blanketUp ? 1 : -1) * kBlanketMotorPower);
         }
         else if(autoCalibrate)
         {
-            // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
-            // blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+            blanketMotor.setOpenLoopRampRate(1);
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            blanketMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
             blanketMotor.set(kCalibrationPower);
-        }
-
-        if(blanketMotor.getOutputCurrent() >= 1)
-        {
-            blanketMotor.getEncoder().setPosition(kCalPosition);
-            calibrated = true;
+            if(blanketMotor.getOutputCurrent() >= 5)
+            {
+                blanketMotor.getEncoder().setPosition(kCalPosition);
+                calibrated = true;
+            }
         }
 
         leftFlapSolenoid.set(leftFlapOpen ^ invertLeftSolenoid);
         rightFlapSolenoid.set(rightFlapOpen ^ invertRightSolenoid);
+    }
+
+    private boolean disabledInit = true;
+    private double disabledTime;
+    @Override
+    public void disable()
+    {
+        if(disabledInit)
+        {
+            disabledTime = Timer.getFPGATimestamp();
+        }
+        if(Timer.getFPGATimestamp() - disabledTime > kDisableCoastTimeThreshold)
+        {
+            blanketMotor.setIdleMode(IdleMode.kCoast);
+            calibrated = false;
+        }
+        disabledInit = false;
     }
 
     public Hopper setBlanket(boolean up) {
@@ -94,8 +117,9 @@ public class Hopper extends Subsystem {
     private NetworkTableEntry blanketEntry = tab.add("Blanket Up", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
     private NetworkTableEntry leftFlapEntry = tab.add("Left Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)         .withPosition(0,0).withSize(2,1).getEntry();
     private NetworkTableEntry rightFlapEntry = tab.add("Right Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)   .withPosition(0,1).getEntry();
-    private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
-    private NetworkTableEntry motorOutputEntry = tab.add("Motor Current", "not updating").withWidget(BuiltInWidgets.kTextView)             .withPosition(2,1).getEntry();
+    private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(2,0).getEntry();
+    private NetworkTableEntry motorOutputEntry = tab.add("Motor Current", -10000).withWidget(BuiltInWidgets.kTextView)             .withPosition(2,1).getEntry();
+    private NetworkTableEntry motorPosEntry = tab.add("Motor Pos", -10000).withWidget(BuiltInWidgets.kTextView)             .withPosition(2,2).getEntry();
 
     @Override
     public void updateShuffleboard() {
@@ -104,5 +128,6 @@ public class Hopper extends Subsystem {
         rightFlapEntry.setBoolean(rightFlapOpen);
         calibratedEntry.setBoolean(calibrated);
         motorOutputEntry.setDouble(blanketMotor.getOutputCurrent());
+        motorPosEntry.setDouble(blanketMotor.getEncoder().getPosition());
     }
 }
