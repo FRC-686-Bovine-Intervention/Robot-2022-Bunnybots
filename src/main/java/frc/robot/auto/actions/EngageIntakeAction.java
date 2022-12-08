@@ -8,33 +8,65 @@ import frc.robot.subsystems.Intake.IntakeState;
 public class EngageIntakeAction implements Action{
     private Intake intake = Intake.getInstance();
 
-    private final double startTime;
-    private boolean cratesDropped = false;
-    private boolean ballsDumped = false;
+    private double grabTime;
+    private enum IntakeStep {
+        CALIBRATING,
+        GRABBING,
+        GRABBED,
+        DUMPING,
+        DROPPED,
+        FINISHED
+    }
+    private IntakeStep intakeStep = IntakeStep.CALIBRATING;
 
     public EngageIntakeAction() {
-        startTime = Timer.getFPGATimestamp();
+        
     }
 
     @Override
     public void start() {
-        intake.setState(IntakeState.GRAB);
     }
     
     @Override
     public void run() {
-        if(intake.intakeStatus == IntakeState.DROP)
-            cratesDropped = true;
-        if(!ballsDumped && Timer.getFPGATimestamp() - startTime > 0.5)
+        switch(intakeStep)
         {
-            intake.setState(IntakeState.DUMP);
-            ballsDumped = true;
+            case CALIBRATING:
+                if(intake.calibrated)
+                    intakeStep = IntakeStep.GRABBING;
+            break;
+            case GRABBING:
+                if(intake.isAtPos(ArmPosEnum.GROUND))
+                {
+                    grabTime = Timer.getFPGATimestamp();
+                    intakeStep = IntakeStep.GRABBED;
+                    break;
+                }
+                intake.setState(IntakeState.GROUND);
+            break;
+            case GRABBED:
+                intake.setState(IntakeState.GRAB);
+                if(Timer.getFPGATimestamp() - grabTime > 0.5)
+                {
+                    intakeStep = IntakeStep.DUMPING;
+                    intake.setState(IntakeState.DUMP);
+                }
+            break;
+            case DUMPING:
+                if(intake.isAtPos(ArmPosEnum.DROP))
+                    intakeStep = IntakeStep.DROPPED;
+            break;
+            case DROPPED:
+                if(intake.isAtPos(ArmPosEnum.GROUND))
+                    intakeStep = IntakeStep.FINISHED;
+            break;
+            default: break;
         }
     }
 
     @Override
     public boolean isFinished() {
-        return cratesDropped && intake.isAtPos(ArmPosEnum.GROUND);
+        return intakeStep == IntakeStep.FINISHED;
     }
 
     @Override

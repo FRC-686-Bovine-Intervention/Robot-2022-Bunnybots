@@ -32,7 +32,7 @@ public class Intake extends Subsystem{
     
     // Disable Behavior
     private static final double kDisableCoastTimeThreshold = 5;
-    private static final double kDisableRecalPosThreshold = 1;
+    private static final double kDisableRecalPosThreshold = 5;
 
     // Unit Conversion
     private static final double kGearRatio = 300;  // 16 in gearbox, 48t:12t sprockets
@@ -46,8 +46,8 @@ public class Intake extends Subsystem{
     private static final double kP = 0.1;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kMaxVelocityDegPerSecond = 45;
-    private static final double kMaxAccelerationDegPerSecSquared = 135;
+    private static final double kMaxVelocityDegPerSecond = 50;
+    private static final double kMaxAccelerationDegPerSecSquared = 180;
 
     // Position Check
     private static final double kAtTargetThresholdDegrees = 1.0;
@@ -115,6 +115,7 @@ public class Intake extends Subsystem{
     }
 
     private boolean jiggleStep = false;
+    private boolean movingClawClosed = false;
     private double jiggleCount = 0;
     @Override
     public void run()
@@ -162,12 +163,15 @@ public class Intake extends Subsystem{
                 pid.setGoal(ArmPosEnum.CALIBRATION.angleDeg);
                 leftArmMotor.set(TalonFXControlMode.PercentOutput, kCalibrationPercentOutput);
                 if(checkCalSwitch())
-                    setState(IntakeState.GRAB);
+                    setState(IntakeState.GROUND);
+                    movingClawClosed = true;
             break;
         }
 
+        if(isAtPos(intakeStatus.armPos))
+            movingClawClosed = false;
         clawSolenoid.set(intakeStatus.closedClaw ^ invertSolenoid);
-        if(isAtPos((75 + 15) / 2, Math.abs(75 - 15) / 2))
+        if(isAtPos((75 + 15) / 2, Math.abs(75 - 15) / 2) || movingClawClosed)
             clawSolenoid.set(true ^ invertSolenoid);
 
         if(checkCalSwitch())

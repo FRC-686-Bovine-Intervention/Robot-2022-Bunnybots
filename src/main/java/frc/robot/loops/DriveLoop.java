@@ -69,14 +69,14 @@ public class DriveLoop implements Loop
 	public static double kDriveWatchdogTimerThreshold = 0.500;
 
 	// Wheels
-	public static double kDriveWheelCircumInches    = 6*Math.PI*190.5/188.2;
+	public static double kDriveWheelCircumInches    = 6*Math.PI;//*190.5/188.2;
 	public static double kTrackWidthInches          = 22.000;
 	public static double kTrackEffectiveDiameter    = 22.5; //Went 707in in 10 rotations       (kTrackWidthInches * kTrackWidthInches + kTrackLengthInches * kTrackLengthInches) / kTrackWidthInches;
 	public static double kTrackScrubFactor          = 1.0;
 
 	// Wheel Encoder
-	public static int    kTalonFXEncoderUnitsPerRev    = 2048;
-	public static double kDriveGearRatio				= (50.0/14.0)*(50.0/14.0);
+	public static int    kTalonFXEncoderUnitsPerRev    = 1024;
+	public static double kDriveGearRatio				= 4;//(10.71);
 	public static double kFalconEncoderStatusFramePeriod = 0.100;	// 100 ms
 
 	// CONTROL LOOP GAINS   
@@ -90,9 +90,9 @@ public class DriveLoop implements Loop
     // PID gains for drive velocity loop (sent to Talon)
     // Units: error is 2048 counts/rev.  Max output is +/- 1023 units
     public static double kDriveVelocityKf = kCalPercentOutput * 1023.0 / kCalEncoderUnitsPer100ms;
-    public static double kDriveVelocityKp = 0.3;
+    public static double kDriveVelocityKp = 0.5;//0.3*12.76
     public static double kDriveVelocityKi = 0.0;
-    public static double kDriveVelocityKd = 5.0;
+    public static double kDriveVelocityKd = 50;//5.0;
     public static int    kDriveVelocityIZone = 0;
     public static double kDriveVelocityRampRate = 0;	// seconds from zero to full speed
     public static int    kDriveVelocityAllowableError = 0;
@@ -152,6 +152,9 @@ public class DriveLoop implements Loop
 		 *****************************************************************/
 		lMotorMaster = new TalonSRX(Constants.kLeftMasterID);
 		rMotorMaster = new TalonSRX(Constants.kRightMasterID);
+
+		lMotorMaster.setSensorPhase(true);
+		rMotorMaster.setSensorPhase(true);
         
 		lMotorMaster.configFactoryDefault();
 		rMotorMaster.configFactoryDefault();

@@ -24,7 +24,7 @@ public class DriveStraightAction implements Action{
 
     @Override
     public void run() {
-        Drive.getInstance().setVelocityHeadingSetpoint(18, startingHeading);
+        Drive.getInstance().setVelocityHeadingSetpoint(24, startingHeading);
     }
 
     @Override

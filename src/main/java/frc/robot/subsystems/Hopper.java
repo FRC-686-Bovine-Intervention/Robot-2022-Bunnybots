@@ -29,8 +29,8 @@ public class Hopper extends Subsystem {
     private static final boolean invertLeftSolenoid = false;
     private static final boolean invertRightSolenoid = false;
 
-    private static final double kBlanketMotorPower = 0.5;
-    private static final double kCalibrationPower = 0.2;
+    private static final double kBlanketMotorPower = 1;
+    private static final double kCalibrationPower = 0.25;
     private static final double kCalPosition = 650;
 
     private static final double kDisableCoastTimeThreshold = 5;

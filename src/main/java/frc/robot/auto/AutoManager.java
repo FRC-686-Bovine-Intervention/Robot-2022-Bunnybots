@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.auto.modes.ActionTestingAuto;
 import frc.robot.auto.modes.AutoMode;
+import frc.robot.auto.modes.EpicAwesomeAutoV4868_0;
+import frc.robot.auto.modes.WheelDiameterCalibrationAuto;
+import frc.robot.auto.modes.WheelPositionAuto;
 import frc.robot.command_status.RobotState;
 
 public class AutoManager {
@@ -26,7 +29,10 @@ public class AutoManager {
 
     public void InitChoices()
     {
-        AutoModeChooser.addOption("Action Testing Auto", new ActionTestingAuto());
+        AutoModeChooser.setDefaultOption("Action Testing Auto", new ActionTestingAuto());
+        AutoModeChooser.addOption("Epic Awesome Auto V4868.0", new EpicAwesomeAutoV4868_0());
+        AutoModeChooser.addOption("Wheel Diameter Calibration", new WheelDiameterCalibrationAuto());
+        AutoModeChooser.addOption("Wheel Position", new WheelPositionAuto());
     }
 
     public void init()
