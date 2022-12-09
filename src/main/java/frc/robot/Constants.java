@@ -29,8 +29,7 @@ public class Constants {
     public static final int kTalonTimeoutMs = 5;
 
     // Robot Dimensions
-    public static final double kCenterToSideBumper = 15.0;
-    public static final double kCenterToFrontBumper = 19.5;
-    public static final double kCenterToIntake = 32.0;
+    public static final double kCenterToFrontBumper = 34.25 / 2;
+    public static final double kCenterToIntake = kCenterToFrontBumper + 2;
 }
 

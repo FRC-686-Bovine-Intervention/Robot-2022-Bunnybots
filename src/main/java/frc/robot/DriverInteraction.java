@@ -36,18 +36,22 @@ public class DriverInteraction {
 
     private final RisingEdgeDetector ClawButtonEdgeDetector = new RisingEdgeDetector();
     private final RisingEdgeDetector IntakeButtonEdgeDetector = new RisingEdgeDetector();
-
-    private final RisingEdgeDetector BlanketButtonEdgeDetector = new RisingEdgeDetector();
-    private final RisingEdgeDetector LeftFlapButtonEdgeDetector = new RisingEdgeDetector();
-    private final RisingEdgeDetector RightFlapButtonEdgeDetector = new RisingEdgeDetector();
+    private final RisingEdgeDetector DefenseEdgeDetector = new RisingEdgeDetector();
 
     public void run() {
         ClawButtonEdgeDetector.update(controls.getButton(ButtonControlEnum.CLAW_GRAB));
         IntakeButtonEdgeDetector.update(controls.getButton(ButtonControlEnum.INTAKE_NEXT_STATE));
+        DefenseEdgeDetector.update(controls.getButton(ButtonControlEnum.DEFENSE));
         switch (intake.intakeStatus) {
+            case DEFENSE:
+                if (DefenseEdgeDetector.get())
+                    intake.setState(IntakeState.GROUND);
+            break;
             case GROUND:
                 if (ClawButtonEdgeDetector.get())
                     intake.setState(IntakeState.GRAB);
+                if (DefenseEdgeDetector.get())
+                    intake.setState(IntakeState.DEFENSE);
                 break;
             case GRAB:
                 if (!controls.getButton(ButtonControlEnum.CLAW_GRAB) && intake.isAtPos(ArmPosEnum.GROUND))

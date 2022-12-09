@@ -51,7 +51,8 @@ public class Controls {
         INTAKE_NEXT_STATE,
         LEFT_FLAP,
         RIGHT_FLAP,
-        BLANKET
+        BLANKET,
+        DEFENSE
     }
 
     public boolean getButton(ButtonControlEnum button) {
@@ -60,12 +61,14 @@ public class Controls {
                 return thrustmaster.getRawButton(Thrustmaster.kTriggerButton);
             case INTAKE_NEXT_STATE:
                 return thrustmaster.getRawButton(Thrustmaster.kBottomThumbButton);
+            case DEFENSE:
+                return thrustmaster.getRawButton(Thrustmaster.kRightThumbButton);
             case BLANKET:
-                return thrustmaster.getRawButton(Thrustmaster.kBottomButton2);
+                return thrustmaster.getRawButton(Thrustmaster.kBottomButton2) || thrustmaster.getRawButton(Thrustmaster.kTopButton2);
             case LEFT_FLAP:
-                return thrustmaster.getRawButton(Thrustmaster.kBottomButton1);
+                return thrustmaster.getRawButton(Thrustmaster.kBottomButton3) || thrustmaster.getRawButton(Thrustmaster.kTopButton3);
             case RIGHT_FLAP:
-                return thrustmaster.getRawButton(Thrustmaster.kBottomButton3);
+                return thrustmaster.getRawButton(Thrustmaster.kBottomButton1) || thrustmaster.getRawButton(Thrustmaster.kTopButton1);
             default:
                 return false;
         }

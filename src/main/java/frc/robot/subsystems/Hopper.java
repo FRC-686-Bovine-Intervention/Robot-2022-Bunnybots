@@ -114,12 +114,13 @@ public class Hopper extends Subsystem {
     }
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Hopper");
-    private NetworkTableEntry blanketEntry = tab.add("Blanket Up", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
-    private NetworkTableEntry leftFlapEntry = tab.add("Left Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)         .withPosition(0,0).withSize(2,1).getEntry();
-    private NetworkTableEntry rightFlapEntry = tab.add("Right Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)   .withPosition(0,1).getEntry();
-    private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(2,0).getEntry();
-    private NetworkTableEntry motorOutputEntry = tab.add("Motor Current", -10000).withWidget(BuiltInWidgets.kTextView)             .withPosition(2,1).getEntry();
-    private NetworkTableEntry motorPosEntry = tab.add("Motor Pos", -10000).withWidget(BuiltInWidgets.kTextView)             .withPosition(2,2).getEntry();
+    private NetworkTableEntry blanketEntry = tab.add("Blanket Up", false).withWidget(BuiltInWidgets.kBooleanBox)        .withPosition(0,1).withSize(2,1).getEntry();
+    private NetworkTableEntry leftFlapEntry = tab.add("Left Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox)   .withPosition(0,0).getEntry();
+    private NetworkTableEntry rightFlapEntry = tab.add("Right Flap Open", false).withWidget(BuiltInWidgets.kBooleanBox) .withPosition(1,0).getEntry();
+    private NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)     .withPosition(0,2).getEntry();
+    private NetworkTableEntry calibrateButton = tab.add("Calibrate", false).withWidget(BuiltInWidgets.kToggleButton)    .withPosition(1,2).getEntry();
+    private NetworkTableEntry motorOutputEntry = tab.add("Motor Current", -10000).withWidget(BuiltInWidgets.kTextView)  .withPosition(7,0).getEntry();
+    private NetworkTableEntry motorPosEntry = tab.add("Motor Pos", -10000).withWidget(BuiltInWidgets.kTextView)         .withPosition(8,0).getEntry();
 
     @Override
     public void updateShuffleboard() {
@@ -129,5 +130,10 @@ public class Hopper extends Subsystem {
         calibratedEntry.setBoolean(calibrated);
         motorOutputEntry.setDouble(blanketMotor.getOutputCurrent());
         motorPosEntry.setDouble(blanketMotor.getEncoder().getPosition());
+        if (calibrateButton.getBoolean(false))
+        {
+            calibrated = false;
+            calibrateButton.setBoolean(false);
+        }
     }
 }

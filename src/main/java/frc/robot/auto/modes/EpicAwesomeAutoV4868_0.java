@@ -1,5 +1,6 @@
 package frc.robot.auto.modes;
 
+import frc.robot.Constants;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.EngageIntakeAction;
 import frc.robot.auto.actions.PathFollowerAction;
@@ -29,10 +30,12 @@ public class EpicAwesomeAutoV4868_0 extends AutoMode{
         Vector2d initPos = new Vector2d(0,0);
         Options driveOptions = new Options(48,96,36,false);
 
+        Vector2d firstCratePos = new Vector2d(FieldDimensions.firstCratePos - Constants.kCenterToFrontBumper - Constants.kCenterToIntake, 0);
+
         initPath.add(new Waypoint(initPos, driveOptions));
-        initPath.add(new Waypoint(FieldDimensions.firstCratePos, driveOptions));
-        rPath.add(new Waypoint(FieldDimensions.firstCratePos, driveOptions));
-        rPath.add(new Waypoint(FieldDimensions.firstCratePos.sub(new Vector2d(kReverseInches, 0)), driveOptions));
+        initPath.add(new Waypoint(firstCratePos, driveOptions));
+        rPath.add(new Waypoint(firstCratePos, driveOptions));
+        rPath.add(new Waypoint(firstCratePos.sub(new Vector2d(kReverseInches, 0)), driveOptions));
         rPath.setReverseDirection();
 
         RobotState.getInstance().reset(new Pose());
@@ -42,7 +45,7 @@ public class EpicAwesomeAutoV4868_0 extends AutoMode{
         runAction(new SetIntakeStateAction(IntakeState.GRAB));
         runAction(new PathFollowerAction(rPath));
         runAction(new EngageIntakeAction());
-        Waypoint lastWaypoint = new Waypoint(FieldDimensions.firstCratePos.sub(new Vector2d(kReverseInches, 0)), driveOptions);
+        Waypoint lastWaypoint = new Waypoint(firstCratePos.sub(new Vector2d(kReverseInches, 0)), driveOptions);
         for(int i = 1; i < kRowsOfCrates; i++)
         {
             Path nextCratePath = new Path();

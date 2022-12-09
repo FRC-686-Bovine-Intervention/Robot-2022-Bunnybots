@@ -74,7 +74,7 @@ public class Intake extends Subsystem{
 
     public enum ArmPosEnum
     {
-        DEFENSE     (91),
+        DEFENSE     (60),
         CALIBRATION (91),
         GROUND      (0),
         RAISED      (50),
@@ -152,8 +152,6 @@ public class Intake extends Subsystem{
             default:
                 jiggleCount = 0;
                 jiggleStep = true;
-                // leftArmMotor.set(ControlMode.PercentOutput, Controls.getInstance().getAxis(JoystickEnum.THRUSTMASTER).y * 0.5);
-                // setTargetPos(Controls.getInstance().getButton(ButtonControlEnum.CLAW_GRAB) ? (Controls.getInstance().getButton(ButtonControlEnum.INTAKE_NEXT_STATE) ? ArmPosEnum.DROP : ArmPosEnum.RAISED) : ArmPosEnum.GROUND);
                 setTargetPos(intakeStatus.armPos);
             break;
             case CALIBRATING:
@@ -239,21 +237,20 @@ public class Intake extends Subsystem{
     }
 
     private final ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-    private final NetworkTableEntry statusEntry = tab.add("Status", "not updating what").withWidget(BuiltInWidgets.kTextView)         .withPosition(0,0).withSize(2,1).getEntry();
-    private final NetworkTableEntry armposEntry = tab.add("Arm position", "not updating what").withWidget(BuiltInWidgets.kTextView)   .withPosition(0,1).getEntry();
-    private final NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(1,1).getEntry();
-    private final NetworkTableEntry solenoidEntry = tab.add("Solenoid", false).withWidget(BuiltInWidgets.kBooleanBox)             .withPosition(2,0).getEntry();
-    private final NetworkTableEntry armDegreeEntry = tab.add("Arm Degree", 0).withWidget(BuiltInWidgets.kTextView)             .withPosition(2,1).getEntry();
-    private final NetworkTableEntry jiggleCountEntry = tab.add("Jiggle Count", 0).withWidget(BuiltInWidgets.kTextView)             .withPosition(5,0).getEntry();
-    private final NetworkTableEntry jiggleStepEntry = tab.add("Jiggle Step", "notupdating what").withWidget(BuiltInWidgets.kTextView)             .withPosition(5,1).getEntry();
+    private final NetworkTableEntry statusEntry = tab.add("Status", "not updating what").withWidget(BuiltInWidgets.kTextView)       .withPosition(0,0).withSize(2,1).getEntry();
+    private final NetworkTableEntry armposEntry = tab.add("Arm position", "not updating what").withWidget(BuiltInWidgets.kTextView) .withPosition(0,1).getEntry();
+    private final NetworkTableEntry calibratedEntry = tab.add("Calibrated", false).withWidget(BuiltInWidgets.kBooleanBox)           .withPosition(0,2).getEntry();
+    private final NetworkTableEntry calibrateButton = tab.add("Calibrate", false).withWidget(BuiltInWidgets.kToggleButton)          .withPosition(1,2).getEntry();
+    private final NetworkTableEntry solenoidEntry = tab.add("Solenoid", false).withWidget(BuiltInWidgets.kBooleanBox)               .withPosition(2,0).getEntry();
+    private final NetworkTableEntry armDegreeEntry = tab.add("Arm Degree", 0).withWidget(BuiltInWidgets.kTextView)                  .withPosition(1,1).getEntry();
 
-    private final NetworkTableEntry goalEntry = tab.add("PID Goal", 0).withWidget(BuiltInWidgets.kTextView)               .withPosition(6,1).getEntry();
-    private final NetworkTableEntry errorEntry = tab.add("PID Error", 0).withWidget(BuiltInWidgets.kTextView)             .withPosition(7,1).getEntry();
-    private final NetworkTableEntry outputEntry = tab.add("PID Output", 0).withWidget(BuiltInWidgets.kTextView)           .withPosition(8,1).getEntry();
-    private final NetworkTableEntry pEntry = tab.add("PID P", kP).withWidget(BuiltInWidgets.kTextView)                    .withPosition(6,2).getEntry();
-    private final NetworkTableEntry iEntry = tab.add("PID I", kI).withWidget(BuiltInWidgets.kTextView)                    .withPosition(7,2).getEntry();
-    private final NetworkTableEntry dEntry = tab.add("PID D", kD).withWidget(BuiltInWidgets.kTextView)                    .withPosition(8,2).getEntry();
-    private final NetworkTableEntry updateButtonEntry = tab.add("Update PID", false).withWidget(BuiltInWidgets.kToggleButton) .withPosition(6,3).withSize(3,1).getEntry();
+    private final NetworkTableEntry goalEntry = tab.add("PID Goal", 0).withWidget(BuiltInWidgets.kTextView)                     .withPosition(6,1).getEntry();
+    private final NetworkTableEntry errorEntry = tab.add("PID Error", 0).withWidget(BuiltInWidgets.kTextView)                   .withPosition(7,1).getEntry();
+    private final NetworkTableEntry outputEntry = tab.add("PID Output", 0).withWidget(BuiltInWidgets.kTextView)                 .withPosition(8,1).getEntry();
+    private final NetworkTableEntry pEntry = tab.add("PID P", kP).withWidget(BuiltInWidgets.kTextView)                          .withPosition(6,2).getEntry();
+    private final NetworkTableEntry iEntry = tab.add("PID I", kI).withWidget(BuiltInWidgets.kTextView)                          .withPosition(7,2).getEntry();
+    private final NetworkTableEntry dEntry = tab.add("PID D", kD).withWidget(BuiltInWidgets.kTextView)                          .withPosition(8,2).getEntry();
+    private final NetworkTableEntry updateButtonEntry = tab.add("Update PID", false).withWidget(BuiltInWidgets.kToggleButton)   .withPosition(6,3).withSize(3,1).getEntry();
 
     @Override
     public void updateShuffleboard() {
@@ -261,9 +258,6 @@ public class Intake extends Subsystem{
         armposEntry.setString(armPosition.name());
         calibratedEntry.setBoolean(calibrated);
         armDegreeEntry.setDouble(encoderUnitsToDegrees(leftArmMotor.getSelectedSensorPosition()));
-
-        jiggleCountEntry.setDouble(jiggleCount);
-        jiggleStepEntry.setString((jiggleStep ? ArmPosEnum.RAISED : ArmPosEnum.JIGGLE_DOWN).name());
 
         solenoidEntry.setBoolean(clawSolenoid.get());
 
@@ -277,6 +271,11 @@ public class Intake extends Subsystem{
                        dEntry.getDouble(0));
             pid.reset(encoderUnitsToDegrees(leftArmMotor.getSelectedSensorPosition()));
             updateButtonEntry.setBoolean(false);
+        }
+        if(calibrateButton.getBoolean(false))
+        {
+            calibrated = false;
+            calibrateButton.setBoolean(false);
         }
     }
 }

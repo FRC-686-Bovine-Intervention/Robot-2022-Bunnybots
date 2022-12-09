@@ -29,8 +29,8 @@ public class AutoManager {
 
     public void InitChoices()
     {
-        AutoModeChooser.setDefaultOption("Action Testing Auto", new ActionTestingAuto());
-        AutoModeChooser.addOption("Epic Awesome Auto V4868.0", new EpicAwesomeAutoV4868_0());
+        AutoModeChooser.addOption("Action Testing Auto", new ActionTestingAuto());
+        AutoModeChooser.setDefaultOption("Epic Awesome Auto V4868.0", new EpicAwesomeAutoV4868_0());
         AutoModeChooser.addOption("Wheel Diameter Calibration", new WheelDiameterCalibrationAuto());
         AutoModeChooser.addOption("Wheel Position", new WheelPositionAuto());
     }
